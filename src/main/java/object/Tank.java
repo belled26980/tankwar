@@ -10,7 +10,30 @@ public class Tank {
     private int y;
     private int speed;
     private Direction direction;
+    private boolean[] dirs=new boolean[4];
+    public  boolean[] getDirs() {
+        return dirs;
+    }
+    private void determineDirection(){
+        if(dirs[0] && !dirs[1] && !dirs[2] && !dirs[3]){
+            direction=Direction.UP;
+        }else if(!dirs[0] && dirs[1] && !dirs[2] && !dirs[3]){
+            direction=Direction.DOWN;
+        }else if(!dirs[0] && !dirs[1] && dirs[2] && !dirs[3]){
+            direction=Direction.LEFT;
+        }else if(!dirs[0] && !dirs[1] && !dirs[2] && dirs[3]){
+            direction=Direction.RIGHT;
+        }else if(dirs[0] && !dirs[1] && dirs[2] && !dirs[3]){
+            direction=Direction.LEFT_UP;
+        }else if(dirs[0] && !dirs[1] && !dirs[2] && dirs[3]){
+            direction=Direction.RIGHT_UP;
+        }else if(!dirs[0] && dirs[1] && dirs[2] && !dirs[3]){
+            direction=Direction.LEFT_DOWN;
+        }else if(!dirs[0] && dirs[1] && !dirs[2] && dirs[3]){
+            direction=Direction.RIGHT_DOWN;
+        }
 
+    }
     public Tank(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
@@ -118,4 +141,11 @@ public class Tank {
 
         }
     }
+
+    public void draw(Graphics g) {
+        determineDirection();
+        move();
+        g.drawImage(getImage(),x,y,null);
+    }
+
 }
