@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 public class TankGame {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-
         GameClient gameClient = new GameClient(1024, 768);
         frame.setTitle("坦克大戰!");
         frame.setResizable(false);

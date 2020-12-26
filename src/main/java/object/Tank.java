@@ -143,9 +143,19 @@ public class Tank {
     }
 
     public void draw(Graphics g) {
-        determineDirection();
-        move();
+     if(!isStop()){
+         determineDirection();
+         move();
+     }
         g.drawImage(getImage(),x,y,null);
+    }
+    public boolean isStop(){
+        for(int i=0;i< dirs.length;i++){
+            if(dirs[i]){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

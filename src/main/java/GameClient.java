@@ -72,7 +72,7 @@ public class GameClient extends JComponent {
                 break;
         }
 
-        playerTank.move();
+
 
 
         //repaint();
