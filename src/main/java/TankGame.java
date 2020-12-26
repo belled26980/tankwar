@@ -1,9 +1,10 @@
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
+//遊戲啟動
 public class TankGame {
     public static void main(String[] args) {
+        //JFrame為啟動用類別
         JFrame frame = new JFrame();
         GameClient gameClient = new GameClient(1024, 768);
         frame.setTitle("坦克大戰!");

@@ -1,5 +1,5 @@
 package object;
-
+//方向
 public enum Direction {
     UP,
     DOWN,
