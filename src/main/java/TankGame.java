@@ -5,6 +5,11 @@ import java.awt.event.KeyEvent;
 //遊戲啟動
 public class TankGame {
     public static GameClient gameClient;
+
+    public static GameClient getGameClient() {
+        return gameClient;
+    }
+
     public static void main(String[] args) {
         gameClient = new GameClient(1024, 768);
         //JFrame為啟動用類別

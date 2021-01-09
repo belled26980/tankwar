@@ -5,9 +5,9 @@ import java.awt.*;
 
 //坦克移動
 public class Tank extends GameObject {
-    private int speed;
-    private Direction direction;
-    private boolean enemy;
+    protected int speed;
+    protected Direction direction;
+    protected boolean enemy;
     private boolean[] dirs = new boolean[4];
 
     public boolean[] getDirs() {
@@ -42,7 +42,7 @@ public class Tank extends GameObject {
     public Tank(int x, int y, Direction direction, boolean enemy, Image[] image) {
         super(x, y, image);
         this.direction = direction;
-        speed = 50;
+        speed = 15;
         this.enemy = enemy;
     }
 
@@ -69,6 +69,12 @@ public class Tank extends GameObject {
 
     public Direction getDirection() {
         return direction;
+    }
+    public void fire(){
+        Bullet bullet=new Bullet(x+width/2-GameClient.bulletImage[0].getWidth(null)/2,
+                y+height/2-GameClient.bulletImage[0].getHeight(null)/2,
+                direction,enemy,GameClient.bulletImage);
+        TankGame.getGameClient().addGameObject(bullet);
     }
 
     public Image getImage() {
@@ -111,6 +117,8 @@ public class Tank extends GameObject {
     }
 
     public void move() {
+        oldX=x;
+        oldY=y;
         switch (direction) {
             case UP:
                 y -= speed;
@@ -140,26 +148,57 @@ public class Tank extends GameObject {
                 x += speed;
                 y -= speed;
                 break;
-
-
-        }//邊界偵測
-        if (x < 0) {
-            x = 0;
-        } else if (x > TankGame.gameClient.getScreenWidth() - width){
-            x=TankGame.gameClient.getScreenWidth() - width;
         }
-        if (y < 0) {
-            y = 0;
-        } else if (y > TankGame.gameClient.getScreenHeight() - height) {
-            y=TankGame.gameClient.getScreenHeight() - height;
+
+    }
+    public boolean collisionBound(){
+        boolean isCollision=false;
+        if(x<0){
+            x=0;
+            isCollision=true;
+        }else if(x>TankGame.gameClient.getScreenWidth()-width){
+            x=TankGame.gameClient.getScreenWidth()-width;
+            isCollision=true;
         }
+        if(y<0){
+            y=0;
+            isCollision=true;
+        }else if(y>TankGame.gameClient.getScreenHeight()-height){
+            y=TankGame.gameClient.getScreenHeight()-height;
+            isCollision=true;
+        }return isCollision;
+    }
+    public boolean collisionObjects(){
+        boolean isCollision=false;
+        for(GameObject gameObject:TankGame.getGameClient().getGameObjects()){
+            if(gameObject==this){
+                continue;
+            }
+            if(gameObject!=this && getRectangle().intersects(gameObject.getRectangle())){
+                System.out.println("hit!");
+                x=oldX;
+                y=oldY;
+                isCollision=true;
+            }
+        }return isCollision;
+    }
+    public boolean collision(){
+        boolean isCollision=false;
+        isCollision=collisionBound();
+        if(!isCollision){
+            isCollision=collisionObjects();
+        }
+        return isCollision;
     }
 
-
     public void draw(Graphics g) {
+        if(!alive){
+            return;
+        }
         if (!isStop()) {
             determineDirection();
             move();
+            collision();
         }
         g.drawImage(image[direction.ordinal()], x, y, null);
     }

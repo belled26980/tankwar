@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 //遊戲客戶端(使用者設定)
 public class GameClient extends JComponent {
@@ -13,13 +14,14 @@ public class GameClient extends JComponent {
     private Image backGround;
     //己方坦克
     private Tank playerTank;
+
     //敵方坦克跟牆壁(因要調整數量 所以用list 可隨時調整)
     private ArrayList<Tank> enemyTanks = new ArrayList<>();
     private ArrayList<Wall> walls = new ArrayList<>();
-    private ArrayList<GameObject> objects = new ArrayList<>();
-
+    private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private boolean stop;
-
+    //子彈圖片
+    public static Image[] bulletImage=new Image[8];
     public int getScreenWidth() {
         return screenWidth;
     }
@@ -63,25 +65,30 @@ public class GameClient extends JComponent {
         for (int i = 0; i < iTankImages.length; i++) {
             iTankImages[i] = Tools.getImage("itank" + sub[i] + ".png");
             eTankImages[i] = Tools.getImage("etank" + sub[i] + ".png");
+            bulletImage[i]=Tools.getImage("missile" + sub[i] + ".png");
         }
+
         //我方坦克
         playerTank = new Tank(500, 50, Direction.DOWN, iTankImages);
 
         //敵方坦克
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                enemyTanks.add(new Tank(350 + j * 90, 400 + i * 90, Direction.UP, true, eTankImages));
+                enemyTanks.add(new Tank(350 + j * 100, 400 + i * 100, Direction.UP, true, eTankImages));
             }
         }
         //牆壁
         walls.add(new Wall(300, 150, true, 16, brickImages));
         walls.add(new Wall(200, 250, false, 16, brickImages));
         walls.add(new Wall(850, 250, false, 16, brickImages));
-        objects.add(playerTank);
-        objects.addAll(walls);
-        objects.addAll(enemyTanks);
+        gameObjects.add(playerTank);
+        gameObjects.addAll(walls);
+        gameObjects.addAll(enemyTanks);
     }
-
+    //增加物件
+    public void addGameObject(GameObject object){
+        gameObjects.add(object);
+    }
     @Override
     //繪製
     protected void paintComponent(Graphics g) {
@@ -89,8 +96,15 @@ public class GameClient extends JComponent {
         g.drawImage(backGround,0,0,null,null);
         g.fillRect(0, 0, screenWidth, screenHeight);
         //image object
-        for (GameObject object : objects) {
+        for (GameObject object : gameObjects) {
             object.draw(g);
+        }
+        //使用迭代器進行移除
+        Iterator<GameObject>iterator=gameObjects.iterator();
+        while(iterator.hasNext()){
+            if(!(iterator.next()).isAlive()){
+                iterator.remove();
+            }
         }
     }
 
@@ -112,6 +126,9 @@ public class GameClient extends JComponent {
 
             case KeyEvent.VK_RIGHT:
                 dirs[3] = true;
+                break;
+            case KeyEvent.VK_A:
+                playerTank.fire();
                 break;
         }
     }
@@ -135,5 +152,9 @@ public class GameClient extends JComponent {
                 dirs[3] = false;
                 break;
         }
+    }
+
+    public ArrayList<GameObject> getGameObjects() {
+        return gameObjects;
     }
 }
