@@ -32,13 +32,7 @@ public class Tank extends GameObject {
         } else if (!dirs[0] && dirs[1] && !dirs[2] && dirs[3]) {
             direction = Direction.RIGHT_DOWN;
         }
-        //邊界偵測
-        if (x < 0) {
-            x = 0;
-        } else if (x > TankGame.gameClient.getScreenHeight() - height) ;
-        if(y<0){
-            y=0;
-        }else if(y>TankGame.gameClient.getScreenWidth()-width);
+
     }
 
     public Tank(int x, int y, Direction direction, Image[] image) {
@@ -48,7 +42,7 @@ public class Tank extends GameObject {
     public Tank(int x, int y, Direction direction, boolean enemy, Image[] image) {
         super(x, y, image);
         this.direction = direction;
-        speed = 5;
+        speed = 50;
         this.enemy = enemy;
     }
 
@@ -148,8 +142,19 @@ public class Tank extends GameObject {
                 break;
 
 
+        }//邊界偵測
+        if (x < 0) {
+            x = 0;
+        } else if (x > TankGame.gameClient.getScreenWidth() - width){
+            x=TankGame.gameClient.getScreenWidth() - width;
+        }
+        if (y < 0) {
+            y = 0;
+        } else if (y > TankGame.gameClient.getScreenHeight() - height) {
+            y=TankGame.gameClient.getScreenHeight() - height;
         }
     }
+
 
     public void draw(Graphics g) {
         if (!isStop()) {
